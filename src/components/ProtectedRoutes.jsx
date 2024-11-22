@@ -1,27 +1,29 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { auth } from '../config/firebase/firebaseconfig';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../config/firebase/firebasemethods';
 
-const ProtectedRoutes = ({ component }) => {
-    const [user, setUser] = useState(false);
+const ProtectedRoutes = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        navigate('/login', { replace: true });
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
-      // use navigate 
-      const navigate = useNavigate()
-      useEffect(() => {
-          onAuthStateChanged(auth, (user) => {
-              if (user) {
-                  setUser(true)
-                  return
-              }
-              navigate('/login')
-          })
-      }, [])
+  if (isAuthenticated === null) {
+    return <h1>Loading...</h1>;
+  }
 
-    return (
-        user ? component : <h1>Loading...</h1>
-    )
-}
+  return isAuthenticated ? children : null;
+};
 
-export default ProtectedRoutes
+export default ProtectedRoutes;
