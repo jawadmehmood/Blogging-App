@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { collection, addDoc, query, where, getDocs, Timestamp, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { db, auth } from '../config/firebase/firebaseconfig';
-import BlogPost from '../components/Blogpost';
+import BlogPost from '../components/BlogPost';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../index.css';
